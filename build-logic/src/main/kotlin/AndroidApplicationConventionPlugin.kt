@@ -18,7 +18,6 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
                 apply("developmentway.android.hilt")
-                apply("androidx.navigation.safeargs")
             }
 
             extensions.configure<ApplicationExtension> {

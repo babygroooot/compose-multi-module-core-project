@@ -15,7 +15,6 @@ class FeatureLibraryGradleConventionPlugin: Plugin<Project> {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
                 apply("developmentway.android.hilt")
-                apply("androidx.navigation.safeargs.kotlin")
             }
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)

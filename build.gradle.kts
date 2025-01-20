@@ -3,9 +3,6 @@ buildscript {
     repositories {
         google()
     }
-    dependencies {
-        classpath(libs.navigation.safe.args)
-    }
 }
 plugins {
     alias(libs.plugins.android.application) apply false
