@@ -22,7 +22,6 @@ class FeatureLibraryGradleConventionPlugin: Plugin<Project> {
                 configureFlavors(this)
                 defaultConfig.targetSdk = DefaultConfig.TARGET_SDK
                 buildFeatures {
-                    viewBinding = true
                     buildConfig = true
                 }
                 resourcePrefix = path.split("""\W""".toRegex()).drop(1).distinct().joinToString(separator = "_").lowercase() + "_"
@@ -33,7 +32,6 @@ class FeatureLibraryGradleConventionPlugin: Plugin<Project> {
                     add("testImplementation", libs.findLibrary("junit.test").get())
                     add("androidTestImplementation", libs.findLibrary("androidx.test.ext").get())
                     add("androidTestImplementation", libs.findLibrary("espresso.core").get())
-                    add("implementation", libs.findLibrary("material.ui").get())
                     add("implementation", libs.findLibrary("androidx.core.ktx").get())
                     add("implementation", libs.findLibrary("androidx.appcompat").get())
                 }

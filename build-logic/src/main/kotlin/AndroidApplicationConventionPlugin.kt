@@ -58,7 +58,6 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                     }
                 }
                 buildFeatures {
-                    viewBinding = true
                     buildConfig = true
                 }
                 packaging {
@@ -73,7 +72,6 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                     add("testImplementation", libs.findLibrary("junit.test").get())
                     add("androidTestImplementation", libs.findLibrary("androidx.test.ext").get())
                     add("androidTestImplementation", libs.findLibrary("espresso.core").get())
-                    add("implementation", libs.findLibrary("material.ui").get())
                     add("implementation", libs.findLibrary("androidx.core.ktx").get())
                     add("implementation", libs.findLibrary("androidx.appcompat").get())
                 }
