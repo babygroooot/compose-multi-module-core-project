@@ -49,7 +49,7 @@ private class AlphaIndicationNode(
     override fun onAttach() {
         graphicsLayer = requireGraphicsContext().createGraphicsLayer()
         coroutineScope.launch {
-            interactionSource.interactions.collectLatest { interaction ->
+            interactionSource.interactions.collect { interaction ->
                 when (interaction) {
                     is PressInteraction.Press -> {
                         animateToPressed()

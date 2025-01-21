@@ -44,7 +44,7 @@ private class ScaleIndicationNode(
 
     override fun onAttach() {
         coroutineScope.launch {
-            interactionSource.interactions.collectLatest { interaction ->
+            interactionSource.interactions.collect { interaction ->
                 when (interaction) {
                     is PressInteraction.Press -> {
                         animateToPressed()
