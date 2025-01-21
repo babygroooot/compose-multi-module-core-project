@@ -1,4 +1,4 @@
-package com.core.common.event
+package com.core.common.observer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
