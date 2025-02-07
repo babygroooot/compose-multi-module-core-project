@@ -3,7 +3,6 @@ package com.core.datastore
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.security.keystore.KeyProperties.KEY_ALGORITHM_AES
 import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.KeyStore
@@ -81,7 +80,7 @@ class CipherWrapper @Inject constructor(
 
     companion object {
         private const val IV_SEPARATOR = "]"
-        private const val ALGORITHM = KEY_ALGORITHM_AES
+        private const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
         private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
         private const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
         private const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING"
