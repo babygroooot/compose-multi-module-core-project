@@ -6,7 +6,7 @@ import com.core.database.model.SampleEntity
 
 @Database(
     entities = [SampleEntity::class],
-    version = 0,
+    version = 1,
 )
 abstract class Database : RoomDatabase() {
 
