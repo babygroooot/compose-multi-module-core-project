@@ -2,6 +2,7 @@ package com.core.network.authenticator
 
 import com.core.datastore.DataStoreManager
 import com.core.network.BuildConfig
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
@@ -23,12 +24,12 @@ class TokenAuthenticator @Inject constructor(
             return null
         }
         val refreshToken = runBlocking {
-            dataStoreManager.getRefreshToken()
+            dataStoreManager.getRefreshToken().first()
         }
         return runBlocking {
-            val request = refreshToken?.let { getNewToken(it) }
-            request?.body()?.let {
-                dataStoreManager.saveToken(it.data.accessToken)
+            val request = getNewToken(refreshToken)
+            request.body()?.let {
+                dataStoreManager.saveAccessToken(it.data.accessToken)
                 dataStoreManager.saveRefreshToken(it.data.refreshToken)
                 response.request.newBuilder()
                     .header(name = "Authorization", value =  "Bearer ${it.data.accessToken}")

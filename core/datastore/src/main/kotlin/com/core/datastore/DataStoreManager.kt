@@ -19,6 +19,8 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 private val Context.dataStore by preferencesDataStore(name = "pref_datastore")
+private const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN"
+private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN"
 
 class DataStoreManager @Inject constructor(
     @ApplicationContext context: Context,
@@ -41,10 +43,10 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    fun getString(key: String): Flow<String> {
+    fun getString(key: String): Flow<String?> {
         val prefKey = stringPreferencesKey(key)
         return dataStore.data.map {
-            it[prefKey] ?: ""
+            it[prefKey]
         }
     }
 
@@ -56,13 +58,14 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    suspend fun getEncryptedString(key: String): String {
-        val preferences = dataStore.data.first()
-        preferences[stringPreferencesKey(key)]?.let { encrypt ->
-            val decodedString = cipherWrapper.decryptData(encrypt)
-            return json.decodeFromString(decodedString)
-        }.run {
-            return ""
+    fun getEncryptedString(key: String): Flow<String> {
+        return getString(key = key).map { encryptedToken ->
+            if (encryptedToken.isNullOrBlank()) {
+                ""
+            } else {
+                val decodedString = cipherWrapper.decryptData(data = encryptedToken)
+                decodedString
+            }
         }
     }
 
@@ -73,10 +76,10 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    fun getBoolean(key: String): Flow<Boolean> {
+    fun getBoolean(key: String): Flow<Boolean?> {
         val prefKey = booleanPreferencesKey(key)
         return dataStore.data.map {
-            it[prefKey] ?: false
+            it[prefKey]
         }
     }
 
@@ -87,10 +90,10 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    fun getInt(key: String): Flow<Int> {
+    fun getInt(key: String): Flow<Int?> {
         val prefKey = intPreferencesKey(key)
         return dataStore.data.map {
-            it[prefKey] ?: -1
+            it[prefKey]
         }
     }
 
@@ -101,10 +104,10 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    fun getLong(key: String): Flow<Long> {
+    fun getLong(key: String): Flow<Long?> {
         val prefKey = longPreferencesKey(key)
         return dataStore.data.map {
-            it[prefKey] ?: -1L
+            it[prefKey]
         }
     }
 
@@ -115,10 +118,10 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    fun getFloat(key: String): Flow<Float> {
+    fun getFloat(key: String): Flow<Float?> {
         val prefKey = floatPreferencesKey(key)
         return dataStore.data.map {
-            it[prefKey] ?: 0.0f
+            it[prefKey]
         }
     }
 
@@ -129,56 +132,58 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    fun getDouble(key: String): Flow<Double> {
+    fun getDouble(key: String): Flow<Double?> {
         val prefKey = doublePreferencesKey(key)
         return dataStore.data.map {
-            it[prefKey] ?: 0.0
+            it[prefKey]
         }
     }
 
-    suspend fun saveToken(token: String) {
-        val encryptedValue = cipherWrapper.encryptData(Json.encodeToString(token))
+    suspend fun saveAccessToken(token: String) {
+        val encryptedValue = cipherWrapper.encryptData(text = token)
         dataStore.edit { prefs ->
-            prefs[stringPreferencesKey("Token")] = encryptedValue
+            prefs[stringPreferencesKey(name = ACCESS_TOKEN_KEY)] = encryptedValue
         }
     }
 
-    suspend fun getToken(): String? {
-        val preferences = dataStore.data.first()
-        preferences[stringPreferencesKey("Token")]?.let { encrypt ->
-            val decodedString = cipherWrapper.decryptData((encrypt))
-            return json.decodeFromString(decodedString)
-        }.run {
-            return ""
+    fun getAccessToken(): Flow<String> {
+        return getString(key = ACCESS_TOKEN_KEY).map { encryptedToken ->
+            if (encryptedToken.isNullOrBlank()) {
+                ""
+            } else {
+                val decodedString = cipherWrapper.decryptData(data = encryptedToken)
+                decodedString
+            }
         }
     }
 
-    suspend fun removeToken() {
+    suspend fun removeAccessToken() {
         dataStore.edit {
-            it.remove(stringPreferencesKey("Token"))
+            it.remove(stringPreferencesKey(name = ACCESS_TOKEN_KEY))
         }
     }
 
     suspend fun saveRefreshToken(token: String) {
-        val encryptedValue = cipherWrapper.encryptData(Json.encodeToString(token))
+        val encryptedValue = cipherWrapper.encryptData(text = token)
         dataStore.edit { prefs ->
-            prefs[stringPreferencesKey("RefreshToken")] = encryptedValue
+            prefs[stringPreferencesKey(name = REFRESH_TOKEN_KEY)] = encryptedValue
         }
     }
 
-    suspend fun getRefreshToken(): String? {
-        val preferences = dataStore.data.first()
-        preferences[stringPreferencesKey("RefreshToken")]?.let { encrypt ->
-            val decodedString = cipherWrapper.decryptData((encrypt))
-            return json.decodeFromString(decodedString)
-        }.run {
-            return ""
+    fun getRefreshToken(): Flow<String> {
+        return getString(key = REFRESH_TOKEN_KEY).map { encryptedToken ->
+            if (encryptedToken.isNullOrBlank()) {
+                ""
+            } else {
+                val decodedString = cipherWrapper.decryptData(data = encryptedToken)
+                decodedString
+            }
         }
     }
 
     suspend fun removeRefreshToken() {
         dataStore.edit {
-            it.remove(stringPreferencesKey("RefreshToken"))
+            it.remove(stringPreferencesKey(name = REFRESH_TOKEN_KEY))
         }
     }
 

@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Call
@@ -53,9 +54,9 @@ class RetrofitModule {
 
         okHttpClientBuilder.addInterceptor { chain ->
             val request = chain.request()
-            val token = runBlocking { dataStoreManager.getToken() }
+            val token = runBlocking { dataStoreManager.getAccessToken().first() }
             val builder = request.newBuilder()
-            if (token.isNullOrBlank().not()) {
+            if (token.isBlank().not()) {
                 builder.addHeader("Authorization", "Bearer $token")
             }
             chain.proceed(builder.build())
